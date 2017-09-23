@@ -29,10 +29,10 @@ The first step to getting accurate lane lines using computer vision is to correc
 
 Camera calibration is done by taking images of a chessboard at from many different angles and locations and detecting the corners of the chessboard in the image, comparing it with the known properties of chessboard corners and computing the calibration matrix. I first start by preparing the "image points" which are the locations of the chessboard corners, and the "object points" which will be the (x,y,z) coordinates of the chessboard corners in the world, assuming that the chessboard is fixed on the plane z=0. 
 
-Using the object points and the image points the camera calibration and distortion coefficients are computed using the opencv functions cv2.calibrateCamera(). With these coefficients we can apply the distortion correction to an image using cv2.undistort(). 
+Using the object points and the image points the camera calibration and distortion coefficients are computed using the opencv functions cv2.calibrateCamera(). With these coefficients we can apply the distortion correction to an image using cv2.undistort(). On the left you will see the original image that still has warping effects from the camera. On the right is the undistorted image that has this distortion corrected. 
 
-![alt text][image2]
-![alt text][image1]
+![alt text][image2] ![alt text][image1]
+
 
 ### Pipeline (single images)
 
