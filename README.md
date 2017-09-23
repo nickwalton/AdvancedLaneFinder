@@ -25,58 +25,46 @@ In this project I use the following steps to find the lanes on an image or video
 
 ### 1. Camera Calibration
 
-The first step to getting accurate lane lines using computer vision is to correct the distortion caused by the camera lens. This distortion warps the image so that it isn't an accurate 2D projection of the 3D scene. The code for this section is in the first cell of the IPython notebook located in ./advanced-lane-finder.ipynb. 
+The first step to getting accurate lane lines using computer vision is to correct the distortion caused by the camera lens. This distortion warps the image so that it isn't an accurate 2D projection of the 3D scene. The code for this section is in the first cell of the IPython notebook located in my IPython Notebook. 
 
 Camera calibration is done by taking images of a chessboard at from many different angles and locations and detecting the corners of the chessboard in the image, comparing it with the known properties of chessboard corners and computing the calibration matrix. I first start by preparing the "image points" which are the locations of the chessboard corners, and the "object points" which will be the (x,y,z) coordinates of the chessboard corners in the world, assuming that the chessboard is fixed on the plane z=0. 
 
 Using the object points and the image points the camera calibration and distortion coefficients are computed using the opencv functions cv2.calibrateCamera(). With these coefficients we can apply the distortion correction to an image using cv2.undistort(). On the left you will see the original image that still has warping effects from the camera. On the right is the undistorted image that has this distortion corrected. 
 
-![alt text][image2] ![alt text][image1]
-<img src='./writeup_images/UndistortedImage.png' width="425"/> <img src='./writeup_images/UndistortedImage.png' width="425"/> 
+<img src='./writeup_images/OriginalImage.png' width="425"/> <img src='./writeup_images/UndistortedImage.png' width="425"/> 
 
 
-### Pipeline (single images)
+### 2. Binary Thresholding
 
-#### 1. Provide an example of a distortion-corrected image.
+The next step is to create a binary thresholded image out of my undistorted image. Binary thresholded means that each pixel is either a 1 or a 0. A 1 meaning ideally that that pixel is part of a lane. This will help us later when we try to fit lane lines to the image. There are many different ways to create a binary thresholded image. For this project I used a couple and combined them together to get a more robust method. My functions for performing these different thresholding processes are defined in the 2nd cell and called in 5th cell lines 9-21 of advanced-lane-finder.ipynb. 
 
-To demonstrate this step, I will describe how I apply the distortion correction to one of the test images like this one:
-![alt text][image2]
+I used an HLS colorspace S channel and an RGB colorspace R channel each thresholded between min and max pixel values combined with Sobel X and Y operators similarly thresholded. Together these proved to be a robust method of getting the lane lines even with changing road conditions. 
 
-#### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
-
-I used a combination of color and gradient thresholds to generate a binary image (thresholding steps at lines # through # in `another_file.py`).  Here's an example of my output for this step.  (note: this is not actually from one of the test images)
+Here is an example of the result:
 
 ![alt text][image3]
 
-#### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
+### 3. Perspect Transform
 
-The code for my perspective transform includes a function called `warper()`, which appears in lines 1 through 8 in the file `example.py` (output_images/examples/example.py) (or, for example, in the 3rd code cell of the IPython notebook).  The `warper()` function takes as inputs an image (`img`), as well as source (`src`) and destination (`dst`) points.  I chose the hardcode the source and destination points in the following manner:
+The next step is to transform the image into a top down "birds eye view" of the road. This allows us to find the lane lines and measure their curvature in the (X,Y) plane which is what we care about. This section is defined in lines 23 - 32 in the 5th cell of the IPython Notebook. The perspective transform is performed using OpenCV's cv2.getPerspectiveTransform() which takes in a set of source points which defines a parallelogram that we will transform into a rectangle in the new image (defined by 4 destination points), transforming the whole image with it into a new perspective. The source points were chosen by observing an example of an image with straight lines and finding a set of four points each on the lane lines like so:
 
-```python
-src = np.float32(
-    [[(img_size[0] / 2) - 55, img_size[1] / 2 + 100],
-    [((img_size[0] / 6) - 10), img_size[1]],
-    [(img_size[0] * 5 / 6) + 60, img_size[1]],
-    [(img_size[0] / 2 + 55), img_size[1] / 2 + 100]])
-dst = np.float32(
-    [[(img_size[0] / 4), 0],
-    [(img_size[0] / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), 0]])
+![alt text][image5]
+
+The destination points were set up in a rectangle and defined where the lane lines would show up in my image. These were set up such that the resulting image entirely focused on the region of interest where lane lines might be found.
+
 ```
-
 This resulted in the following source and destination points:
 
 | Source        | Destination   | 
 |:-------------:|:-------------:| 
-| 585, 460      | 320, 0        | 
-| 203, 720      | 320, 720      |
-| 1127, 720     | 960, 720      |
-| 695, 460      | 960, 0        |
+| 300, 655      | 200, 680      | 
+| 1005, 655     | 1000, 680     |
+| 685, 450      | 1000, 0       |
+| 595, 450      | 200, 0        |
 
-I verified that my perspective transform was working as expected by drawing the `src` and `dst` points onto a test image and its warped counterpart to verify that the lines appear parallel in the warped image.
+After warping the image into a birds eye view perspective the image looked like this:
 
-![alt text][image4]
+![alt text][image6]
 
 #### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
 
