@@ -19,6 +19,7 @@ In this project I use the following steps to find the lanes on an image or video
 [image4]: ./writeup_images/fit_lines.png "Fit Lines"
 [image5]: ./writeup_images/no_warp_points.png "No Warp with Points"
 [image6]: ./writeup_images/warped_points.png "Warped Points"
+[image7]: ./writeup_images/output_example.png "Output Example"
 [video1]: ./project_video_output.mp4 "Video"
 
 ---
@@ -65,29 +66,31 @@ After warping an image into a birds eye view perspective the image transforms to
 
 ![alt text][image6]
 
-#### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
+#### 4. Lane Fitting
 
-Then I did some other stuff and fit my lane lines with a 2nd order polynomial kinda like this:
+After my binary thresholded image is transformed into a birds eye view perspective I next find the lane lines using a sliding histogram approach. The function for this is defined in the 3rd cell of my IPython notebook. The code for this section was mostly developed by Udacity. In this function a sliding window is used starting from the lower part of the image to find the peak in the number of pixels. Then it is moved up focusing on near the area where the peak was in the previous slide. This helps the algorithm to not get pulled away by other side patches that might have remained in the thresholded image. Eventually we have a set of points that we can fit a polynomial to and we can draw lane lines on the image: 
 
-![alt text][image5]
+![alt text][image4]
 
-#### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
+#### 5. Calculating the curvature and the vehicle's position:
 
-I did this in lines # through # in my code in `my_other_file.py`
+This was also done in the 3rd cell of the IPython notebook in lines 75-100. We have the lane lines polynomials from the image before, but this needs to be converted from pixel space to world space. An assumption of 3.7m for lane width and 3m for dashed line is used for the conversion. After this is done the curvature is estimated.
 
-#### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
+The camera is assumed to be in the center of the vehicle, (though that seems to be not quite true) and the left and right beginning of the lines is found from the polynomials we fit earlier. Taking the average of the left and right x intercepts (the center of the lane) and subtracting the center of the image returns the difference between the two and hence how much the car is off center.
 
-I implemented this step in lines # through # in my code in `yet_another_file.py` in the function `map_lane()`.  Here is an example of my result on a test image:
+#### 6. Here is an example of the final output
 
-![alt text][image6]
+Finally the lane lines are projected onto the original undistorted image and the lane line and curvature is found. In this image the curvature is estimated at 10386m and the car is estimated at 56 cm off from the center of the lane. 
+
+![alt text][image7]
 
 ---
 
-### Pipeline (video)
+### Video
 
-#### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (wobbly lines are ok but no catastrophic failures that would cause the car to drive off the road!).
+#### 1. Final Result
 
-Here's a [link to my video result](./project_video.mp4)
+Here's a [link to my video result](./project_video_output.mp4)
 
 ---
 
