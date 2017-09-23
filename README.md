@@ -32,6 +32,7 @@ Camera calibration is done by taking images of a chessboard at from many differe
 Using the object points and the image points the camera calibration and distortion coefficients are computed using the opencv functions cv2.calibrateCamera(). With these coefficients we can apply the distortion correction to an image using cv2.undistort(). On the left you will see the original image that still has warping effects from the camera. On the right is the undistorted image that has this distortion corrected. 
 
 ![alt text][image2] ![alt text][image1]
+<img src=[image2] width="425"/> <img src=[image1] width="425"/> 
 
 
 ### Pipeline (single images)
