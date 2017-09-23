@@ -52,7 +52,6 @@ The next step is to transform the image into a top down "birds eye view" of the 
 
 The destination points were set up in a rectangle and defined where the lane lines would show up in my image. These were set up such that the resulting image entirely focused on the region of interest where lane lines might be found.
 
-```
 This resulted in the following source and destination points:
 
 | Source        | Destination   | 
@@ -62,7 +61,7 @@ This resulted in the following source and destination points:
 | 685, 450      | 1000, 0       |
 | 595, 450      | 200, 0        |
 
-After warping the image into a birds eye view perspective the image looked like this:
+After warping an image into a birds eye view perspective the image transforms to something like this:
 
 ![alt text][image6]
 
