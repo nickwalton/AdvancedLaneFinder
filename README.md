@@ -34,7 +34,6 @@ Using the object points and the image points, the camera calibration and distort
 
 <img src='./writeup_images/OriginalImage.png' width="425"/> <img src='./writeup_images/UndistortedImage.png' width="425"/> 
 
-
 ### 2. Binary Thresholding
 
 The next step is to create a binary thresholded image out of my undistorted image. Binary thresholding means that each pixel is either a 1 or a 0. A 1 meaning ideally that that pixel is part of a lane. This will help us later when we try to fit lane lines to the image. There are many different ways to create a binary thresholded image. For this project I used several different thresholding methods and combined them together to get a more robust thresholding. My functions for performing these different thresholding processes are defined in the 2nd cell and called in 5th cell lines 9-21 of my IPython notebook. 
@@ -78,7 +77,7 @@ This section was implemented in the 3rd cell of the IPython notebook in lines 75
 
 The camera is assumed to be in the center of the vehicle, (though that seems to be not quite true) and the left and right beginning of the lines is found from the polynomials we fit earlier. Taking the average of the left and right x intercepts (the center of the lane) and subtracting the center of the image returns the difference between the two and the distance the vehicle is from center is calculated.
 
-#### 6. Here is an example of the final output
+#### 6. Example of final output:
 
 Finally the lane lines are projected onto the original undistorted image and the lane line and curvature is found. In this image the curvature is estimated at 10386m and the car is estimated at 56 cm off from the center of the lane. 
 
@@ -96,6 +95,6 @@ Here's a [link to my video result](./project_video_output.mp4)
 
 ### Discussion
 
-#### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
+#### 1. Possible failures and future work:
 
 One of the possible failures in my implementation is with the flat plane assumption I use in selecting the 4 points for my perspective transform. In upward hills or bumpy road areas this assumption fails and could cause issues. But the main failure point is likely to be the thresholding. It's difficult if not impossible to threshold just the lane lines using only computer vision techniques so likely the best way would be to have more continuity between streams so that if there is a stream or two that seems really off from the last one it is ignored as a false lane fitting.
