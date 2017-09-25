@@ -69,7 +69,7 @@ After performing the perspective transform the image is transformed into a top d
 
 After my binary thresholded image is transformed into a birds eye view perspective I next find the lane lines using a sliding histogram approach. The function for this is defined in the 3rd cell of my IPython notebook. The code for this section (as well as the project video) came from Udacity. In this function a sliding window is used starting from the lower part of the image to find the peak in the number of pixels. It is then moved up and slides along the x-axis focusing on the area near where the peak was in the next lower section. This helps the algorithm to not get pulled away by other side patches that might have remained in the thresholded image. Eventually we have a set of points that we can fit a polynomial to and we can draw lane lines on the image: 
 
-<img src='./writeup_images/fit_lanes.png' width="425"/>
+<img src='./writeup_images/fit_lines.png' width="425"/>
 
 #### 5. Calculating the curvature and the vehicle's position:
 
